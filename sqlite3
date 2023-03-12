@@ -1,0 +1,127 @@
+import sqlite3
+
+# Tạo database và bảng
+conn = sqlite3.connect('DBPython_Session18.db')
+c = conn.cursor()
+
+c.execute('''CREATE TABLE IF NOT EXISTS Project
+             (ProjectId INTEGER PRIMARY KEY,
+             ProjectName TEXT NOT NULL,
+             PMName TEXT NOT NULL,
+             Language TEXT NOT NULL,
+             StartDate DATE NOT NULL,
+             TotalLeader INTEGER,
+             TotalDevs INTEGER,
+             Status TEXT NOT NULL)''')
+
+# Menu chương trình
+while True:
+    print("Menu:")
+    print("1. Thêm mới dự án")
+    print("2. Hiển thị thông tin tất cả các dự án")
+    print("3. Sắp xếp và hiển thị thông tin các dự án giảm dần theo ngày bắt đầu")
+    print("4. Cập nhật thông tin dự án")
+    print("5. Xóa thông tin dự án")
+    print("6. Tìm kiếm thông tin dự án theo tên dự án")
+    print("7. Lưu thông tin dự án vào file duan.txt")
+    print("8. Đọc và hiển thị thông tin từ file duan.txt")
+    print("9. Thoát")
+
+    choice = input("Nhập lựa chọn của bạn: ")
+
+    if choice == '1':
+        # Thêm mới dự án
+        project_name = input("Nhập tên dự án: ")
+        pm_name = input("Nhập tên PM: ")
+        language = input("Nhập ngôn ngữ: ")
+        start_date = input("Nhập ngày bắt đầu (yyyy-mm-dd): ")
+        total_leader = int(input("Nhập số lượng Leader: "))
+        total_devs = int(input("Nhập số lượng Developers: "))
+        status = input("Nhập trạng thái: ")
+
+        c.execute("INSERT INTO Project (ProjectName, PMName, Language, StartDate, TotalLeader, TotalDevs, Status) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                  (project_name, pm_name, language, start_date, total_leader, total_devs, status))
+        conn.commit()
+        print("Thêm mới dự án thành công")
+
+    elif choice == '2':
+        # Hiển thị thông tin tất cả các dự án
+        c.execute("SELECT * FROM Project")
+        rows = c.fetchall()
+        for row in rows:
+            print(row)
+
+    elif choice == '3':
+        # Sắp xếp và hiển thị thông tin các dự án giảm dần theo ngày bắt đầu
+        c.execute("SELECT * FROM Project ORDER BY StartDate DESC")
+        rows = c.fetchall()
+        for row in rows:
+            print(row)
+
+    elif choice == '4':
+        # Cập nhật thông tin dự án
+        project_id = int(input("Nhập ID dự án cần cập nhật: "))
+        project_name = input(
+            "Nhập tên dự án mới (nếu không muốn cập nhật thì bỏ qua): ")
+        pm_name = input(
+            "Nhập tên PM mới (nếu không muốn cập nhật thì bỏ qua): ")
+    language = input(
+        "Nhập ngôn ngữ mới (nếu không muốn cập nhật thì bỏ qua): ")
+    start_date = input(
+        "Nhập ngày bắt đầu mới (yyyy-mm-dd) (nếu không muốn cập nhật thì bỏ qua): ")
+    total_leader = input(
+        "Nhập số lượng Leader mới (nếu không muốn cập nhật thì bỏ qua): ")
+    total_devs = input(
+        "Nhập số lượng Developers mới (nếu không muốn cập nhật thì bỏ qua): ")
+    status = input(
+        "Nhập trạng thái mới (nếu không muốn cập nhật thì bỏ qua): ")
+
+    if updates:
+        query = "UPDATE Project SET " + \
+            ", ".join([f"{key} = ?" for key, value in updates]) + \
+            " WHERE ProjectId = ?"
+        values = [value for key, value in updates] + [project_id]
+        c.execute(query, values)
+        conn.commit()
+        print("Cập nhật thông tin dự án thành công")
+else:
+    print("Không có gì được cập nhật")
+
+if choice == '5':
+    # Xóa thông tin dự án
+    project_id = int(input("Nhập ID dự án cần xóa: "))
+c.execute("DELETE FROM Project WHERE ProjectId = ?", (project_id,))
+conn.commit()
+print("Xóa thông tin dự án thành công")
+
+        elif choice == '6':
+    # Tìm kiếm thông tin dự án theo tên dự án
+    project_name = input("Nhập tên dự án cần tìm kiếm: ")
+    c.execute("SELECT * FROM Project WHERE ProjectName LIKE ?",
+              ('%' + project_name + '%',))
+    rows = c.fetchall()
+    for row in rows:
+        print(row)
+
+    elif choice == '7':
+        # Lưu thông tin dự án vào file duan.txt
+    c.execute("SELECT * FROM Project")
+    rows = c.fetchall()
+    with open("duan.txt", "w") as f:
+        for row in rows:
+            f.write(str(row) + "\n")
+    print("Lưu thông tin dự án vào file duan.txt thành công")
+
+    elif choice == '8':
+        # Đọc và hiển thị thông tin từ file duan.txt
+    with open("duan.txt", "r") as f:
+        rows = f.readlines()
+        for row in rows:
+            print(row)
+
+    elif choice == '9':
+        # Thoát chương trình
+    break
+
+    else:
+    print("Lựa chọn không hợp lệ")
