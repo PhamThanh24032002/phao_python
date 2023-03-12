@@ -1,0 +1,63 @@
+import pickle
+class employee:
+    def __init__(self, empId = None, empName = None, Phone = None, Email = None, Salary = None):
+        self.empId = empId
+        self.empName = empName
+        self.Phone = Phone
+        self.Email = Email
+        self.Salary = Salary
+    def input(self):
+        self.empId = input("Nhập mã nhân viên:")
+        self.empName = input("Nhập tên nhân viên: ")
+        self.Phone = input("Nhập số điện thoại: ")
+        self.Email = input("Nhập email: ")
+        self.Salary = input("Nhập lương: ")
+    def display(self):
+        print("Mã nhân viên: " + self.empId + " | Tên nhân viên: " + self.empName + " | Số điện thoại: " + self.Phone + " | Email: " + self.Email + " | Lương: " + self.Salary)
+class EmployeeManager:
+    def __init__(self):
+        self.employees = []
+    def input_employee(self):
+        newEmp =employee()
+        newEmp.input()
+        self.employees.append(newEmp)
+    def showAll(self):
+        print("Danh sách nhân viên: ")
+        for emp in self.employees:
+            emp.display()
+# Menu chương trình
+empManager = EmployeeManager()
+while True:
+    print("Menu:")
+    print("1. Thêm mới nhân viên")
+    print("2. Hiển thị thông tin tất cả các dự án")
+    print("3. Lưu thông tin dự án vào file employeeLst.txt")
+    print("4. Đọc và hiển thị thông tin từ file employeeLst.txt")
+    print("5. Thoát")
+
+    choice = input("Nhập lựa chọn của bạn: ")
+
+    if choice == '1':
+       empManager.input_employee()
+    elif choice == '2':
+       empManager.showAll()
+    elif choice == '3':
+        # Lưu thông tin dự án vào file duan.txt
+        with open("employeeLst.txt", "w",encoding="utf-8") as f:
+            for row in empManager.employees:
+                data = []
+                data.insert(row.display())
+                f.write(str(row) + "\n")
+        print("Lưu thông tin dự án vào file employeeLst.txt thành công")
+    elif choice == '4':
+        # Đọc và hiển thị thông tin từ file duan.txt
+        with open("employeeLst.txt", "r",encoding="utf-8") as f:
+            line=f.readline()
+            while not line:
+                print(line,end="")
+                line=f.readline()
+    elif choice == '5':
+        # Thoát chương trình
+        break
+    else:
+        print("Lựa chọn không hợp lệ")
